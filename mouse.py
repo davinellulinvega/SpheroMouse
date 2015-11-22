@@ -56,7 +56,7 @@ sphero.connect()
 sphero.set_stablization(0x00, False)
 
 # Set the data streaming
-sphero.set_data_strm(200, 1, sphero_driver.STRM_MASK1['GYRO_X_RAW'] | sphero_driver.STRM_MASK1['GYRO_Y_RAW'], 0, 0, False)
+sphero.set_data_strm(400, 1, sphero_driver.STRM_MASK1['GYRO_X_RAW'] | sphero_driver.STRM_MASK1['GYRO_Y_RAW'], 0, 0, False)
 
 # Configure the collision detection
 sphero.config_collision_detect(0x01, 0x0C, 0x00, 0x0C, 0x00, 10, False)
@@ -78,8 +78,11 @@ try:  # Encapsulate into a try catch to somehow be able to stop this infinite lo
         sleep(60)
 except KeyboardInterrupt:
     print("The user asked us to stop")
+    # Switch the back led off
     sphero.set_back_led(0x00, False)
+    # Disconnect from the robot
     sphero.disconnect()
+    # Wait for all threads to stop
     sphero.join()
     print("Goodbye all you people")
 
