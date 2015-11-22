@@ -19,33 +19,20 @@ def on_collision(data):
     pyautogui.click()
     print("Just clicked")
 
-# Define a function for processing gyro data
-def on_gyro(data):
+# Define a function for processing IMU data
+def on_imu(data):
     """
-    Process the gyroscopic data to move the mouse around the screen.
-    :param data: a dictionary containing information from the gyro sensor
+    Process the IMU data to move the mouse around the screen.
+    :param data: a dictionary containing information from the IMU sensor
     :return: Nothing
     """
 
     # Declare some variables for ease of reading
-    x = data['GYRO_X_RAW']
-    y = data['GYRO_Y_RAW']
+    pitch = data['IMU_PITCH_FILTERED']
+    roll = data['IMU_ROLL_FILTERED']
+    yaw = data['IMU_YAW_FILTERED']
 
-    # Check the sign of X
-    if x > 0:
-        # Move the mouse up?
-        pyautogui.moveRel(10, 0)
-    else:
-        # Move the mouse down
-        pyautogui.moveRel(-10, 0)
-
-    # Same principle with left and right for y
-    if y > 0:
-        # Move the mouse left
-        pyautogui.moveRel(0, -10)
-    else:
-        # Move the mouse right
-        pyautogui.moveRel(0, 10)
+    print("({}, {})".format(x, y))
 
 # Create an instance of the sphero class
 sphero = sphero_driver.Sphero(target_addr="68:86:E7:06:30:CB")
@@ -56,14 +43,14 @@ sphero.connect()
 sphero.set_stablization(0x00, False)
 
 # Set the data streaming
-sphero.set_data_strm(400, 1, sphero_driver.STRM_MASK1['GYRO_X_RAW'] | sphero_driver.STRM_MASK1['GYRO_Y_RAW'], 0, 0, False)
+sphero.set_data_strm(400, 1, sphero_driver.STRM_MASK1['IMU_PITCH_FILTERED'] | sphero_driver.STRM_MASK1['IMU_YAW_FILTERED'] | sphero_driver.STRM_MASK1['IMU_ROLL_FILTERED'], 0, 0, False)
 
 # Configure the collision detection
 sphero.config_collision_detect(0x01, 0x0C, 0x00, 0x0C, 0x00, 10, False)
 
-# Add the callbacks for processing gyro and collision data/events
+# Add the callbacks for processing imu and collision data/events
 sphero.add_async_callback(sphero_driver.IDCODE['COLLISION'], on_collision)
-sphero.add_async_callback(sphero_driver.IDCODE['DATA_STRM'], on_gyro)
+sphero.add_async_callback(sphero_driver.IDCODE['DATA_STRM'], on_imu)
 
 # Turn the back led on
 sphero.set_back_led(0xff, False)
