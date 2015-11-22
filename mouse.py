@@ -55,7 +55,7 @@ sphero.connect()
 sphero.set_stablization(0x00, False)
 
 # Set the data streaming
-sphero.set_data_strm(400, 1,
+sphero.set_data_strm(15, 1,
                      sphero_driver.STRM_MASK1['IMU_PITCH_FILTERED'] | sphero_driver.STRM_MASK1['IMU_YAW_FILTERED'] |
                      sphero_driver.STRM_MASK1['IMU_ROLL_FILTERED'], 0, 0, False)
 
