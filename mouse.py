@@ -43,7 +43,7 @@ sphero.set_stablization(0x00, False)
 sphero.set_data_strm(200, 1, sphero_driver.STRM_MASK1['GYRO_X_RAW'] | sphero_driver.STRM_MASK1['GYRO_Y_RAW'], 0, 0, False)
 
 # Configure the collision detection
-sphero.config_collision_detect(0x01, 0x0A, 0x00, 0x0A, 0x00, 10, False)
+sphero.config_collision_detect(0x01, 0x0F, 0x00, 0x0F, 0x00, 10, False)
 
 # Add the callbacks for processing gyro and collision data/events
 sphero.add_async_callback(sphero_driver.IDCODE['COLLISION'], on_collision)
