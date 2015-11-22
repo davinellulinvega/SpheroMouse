@@ -7,8 +7,7 @@ For the script to work, you need to have installed:
   + python-xlib
   
 To install pyautogui and python-xlib on a linux system just enter the following commands in a terminal:
-<pre><code>
-sudo apt-get install python-xlib
+<pre><code>sudo apt-get install python-xlib
 sudo pip install pyautogui
 </code></pre>
 
