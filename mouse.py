@@ -27,9 +27,25 @@ def on_gyro(data):
     :return: Nothing
     """
 
-    # For the moment simply print a message
-    print("Gyro X: {}".format(data['GYRO_X_RAW']))
-    print("Gyro Y: {}".format(data['GYRO_Y_RAW']))
+    # Declare some variables for ease of reading
+    x = data['GYRO_X_RAW']
+    y = data['GYRO_Y_RAW']
+
+    # Check the sign of X
+    if x > 0:
+        # Move the mouse up?
+        pyautogui.moveRel(10, 0)
+    else:
+        # Move the mouse down
+        pyautogui.moveRel(-10, 0)
+
+    # Same principle with left and right for y
+    if y > 0:
+        # Move the mouse left
+        pyautogui.moveRel(0, -10)
+    else:
+        # Move the mouse right
+        pyautogui.moveRel(0, 10)
 
 # Create an instance of the sphero class
 sphero = sphero_driver.Sphero(target_addr="68:86:E7:06:30:CB")
