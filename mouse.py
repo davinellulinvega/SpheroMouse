@@ -11,6 +11,8 @@ width, height = pyautogui.size()
 half_width = width / 2
 half_height = height / 2
 
+pyautogui.FAILSAFE = False
+
 
 # Define a function for processing collision detection
 def on_collision(data):
@@ -22,7 +24,6 @@ def on_collision(data):
 
     # Simply click on the present location
     pyautogui.click()
-    print("Just clicked")
 
 
 # Define a function for processing IMU data
@@ -34,13 +35,11 @@ def on_imu(data):
     """
 
     # Declare some variables for ease of reading
-    pitch = data['IMU_PITCH_FILTERED']  # Translate in a displacement on Y axis
-    roll = data['IMU_ROLL_FILTERED']  # Translate in a displacement on X axis
+    pitch = float(data['IMU_PITCH_FILTERED'])  # Translate in a displacement on Y axis
+    roll = float(data['IMU_ROLL_FILTERED'])  # Translate in a displacement on X axis
 
-    # Pitch and roll are in the range [-179, 180], thus dividing by 180 gives us a ratio applied to half the width or
-    # height of the screen
-    x = half_width + (half_width * (roll / 180))
-    y = half_height + (half_height * (pitch / 180))
+    x = half_width + (half_width * (roll / 45))
+    y = half_height + (half_height * (pitch / 90))
 
     # Move the mouse on the screen
     pyautogui.moveTo(x, y)
@@ -54,13 +53,18 @@ sphero.connect()
 # Disable the stabilization
 sphero.set_stablization(0x00, False)
 
+# Set the heading to 0
+sphero.set_heading(0x00, False)
+# Put the robot into the 0 position
+sphero.roll(0x00, 0x00, 0x00, False)
+
 # Set the data streaming
-sphero.set_data_strm(15, 1,
+sphero.set_data_strm(70, 1,
                      sphero_driver.STRM_MASK1['IMU_PITCH_FILTERED'] | sphero_driver.STRM_MASK1['IMU_YAW_FILTERED'] |
                      sphero_driver.STRM_MASK1['IMU_ROLL_FILTERED'], 0, 0, False)
 
 # Configure the collision detection
-sphero.config_collision_detect(0x01, 0x0C, 0x00, 0x0C, 0x00, 10, False)
+sphero.config_collision_detect(0x01, 0x0C, 0x00, 0x07, 0x00, 10, False)
 
 # Add the callbacks for processing imu and collision data/events
 sphero.add_async_callback(sphero_driver.IDCODE['COLLISION'], on_collision)
