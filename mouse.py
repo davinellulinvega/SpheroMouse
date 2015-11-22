@@ -49,6 +49,9 @@ sphero.config_collision_detect(0x01, 0x0A, 0x00, 0x0A, 0x00, 10, False)
 sphero.add_async_callback(sphero_driver.IDCODE['COLLISION'], on_collision)
 sphero.add_async_callback(sphero_driver.IDCODE['DATA_STRM'], on_gyro)
 
+# Turn the back led on
+sphero.set_back_led(0xff, False)
+
 # Start the thread for data processing
 sphero.start()
 
@@ -59,6 +62,7 @@ try:  # Encapsulate into a try catch to somehow be able to stop this infinite lo
         sleep(60)
 except KeyboardInterrupt:
     print("The user asked us to stop")
+    sphero.set_back_led(0x00, False)
     sphero.disconnect()
     sphero.join()
     print("Goodbye all you people")
