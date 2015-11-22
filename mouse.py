@@ -6,6 +6,11 @@ from sphero_driver import sphero_driver
 import pyautogui
 from time import sleep
 
+# Define the size of the screen
+width, height = pyautogui.size()
+half_width = width / 2
+half_height = height / 2
+
 
 # Define a function for processing collision detection
 def on_collision(data):
@@ -19,6 +24,7 @@ def on_collision(data):
     pyautogui.click()
     print("Just clicked")
 
+
 # Define a function for processing IMU data
 def on_imu(data):
     """
@@ -28,11 +34,17 @@ def on_imu(data):
     """
 
     # Declare some variables for ease of reading
-    pitch = data['IMU_PITCH_FILTERED']
-    roll = data['IMU_ROLL_FILTERED']
-    yaw = data['IMU_YAW_FILTERED']
+    pitch = data['IMU_PITCH_FILTERED']  # Translate in a displacement on Y axis
+    roll = data['IMU_ROLL_FILTERED']  # Translate in a displacement on X axis
 
-    print("({}, {})".format(x, y))
+    # Pitch and roll are in the range [-179, 180], thus dividing by 180 gives us a ratio applied to half the width or
+    # height of the screen
+    x = half_width + (half_width * (roll / 180))
+    y = half_height + (half_height * (pitch / 180))
+
+    # Move the mouse on the screen
+    pyautogui.moveTo(x, y)
+
 
 # Create an instance of the sphero class
 sphero = sphero_driver.Sphero(target_addr="68:86:E7:06:30:CB")
@@ -43,7 +55,9 @@ sphero.connect()
 sphero.set_stablization(0x00, False)
 
 # Set the data streaming
-sphero.set_data_strm(400, 1, sphero_driver.STRM_MASK1['IMU_PITCH_FILTERED'] | sphero_driver.STRM_MASK1['IMU_YAW_FILTERED'] | sphero_driver.STRM_MASK1['IMU_ROLL_FILTERED'], 0, 0, False)
+sphero.set_data_strm(400, 1,
+                     sphero_driver.STRM_MASK1['IMU_PITCH_FILTERED'] | sphero_driver.STRM_MASK1['IMU_YAW_FILTERED'] |
+                     sphero_driver.STRM_MASK1['IMU_ROLL_FILTERED'], 0, 0, False)
 
 # Configure the collision detection
 sphero.config_collision_detect(0x01, 0x0C, 0x00, 0x0C, 0x00, 10, False)
@@ -72,4 +86,3 @@ except KeyboardInterrupt:
     # Wait for all threads to stop
     sphero.join()
     print("Goodbye all you people")
-
