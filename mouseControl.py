@@ -5,12 +5,17 @@ __author__ = 'davinellulinvega'
 import pyautogui
 from sphero_driver import sphero_driver
 from time import sleep
+from math import atan
 
 
 # Get the screen size
 screen_w, screen_h = pyautogui.size()
+half_w = float(screen_w / 2)
+half_h = float(screen_h / 2)
 # Initialize the position of the mouse
 x, y = pyautogui.position()
+x = float(x)
+y = float(y)
 
 
 # Create a sphero object
@@ -33,10 +38,27 @@ if sphero.is_connected:
     speed = 0
     heading = 0
 
-    # No comes the fun part were we just take the position of the mouse and try to make the robot roll in the right direction
+    # No comes the fun part were we just take the position of the mouse and try to make the robot roll in
+    # the right direction
     try:
         while True:
+            # Compute the speed. 255 being the max speed for the robot.
+            speed = (abs(x - half_w) / half_w) * 255
+            # Compute the heading
+            heading = atan(y/x)
+            # Make sure the heading is between 0 and 359
+            heading %= 360
 
+            # Ask the robot to roll
+            sphero.roll(speed, heading, 0x01, False)
+
+            # Maybe sleep for a little while
+            sleep(0.3)
+
+            # Get the new mouse position
+            x, y = pyautogui.position()
+            x = float(x)
+            y = float(y)
 
     except KeyboardInterrupt:
         # Ask the robot to stop rolling
