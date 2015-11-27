@@ -26,6 +26,8 @@ if sphero.is_connected:
     sphero.set_stablization(True, False)
     # Set the heading to 0 for the moment
     sphero.roll(0x00, 0x00, 0x00, False)
+    # Turn the tail light on
+    sphero.set_back_led(0x255, False)
 
     # Initialize the variables
     speed = 0
@@ -37,6 +39,10 @@ if sphero.is_connected:
 
 
     except KeyboardInterrupt:
+        # Ask the robot to stop rolling
+        sphero.roll(0x00, 0x00, 0x00, False)
+        # Turn the tail light off
+        sphero.set_back_led(0x00, False)
         # Disconnect from the robot
         sphero.disconnect()
         # Print a little message
