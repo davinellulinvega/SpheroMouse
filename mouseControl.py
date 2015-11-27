@@ -50,7 +50,7 @@ if sphero.is_connected:
             heading %= 360
 
             # Ask the robot to roll
-            sphero.roll(speed, heading, 0x01, False)
+            sphero.roll(int(speed), int(heading), 0x01, False)
 
             # Maybe sleep for a little while
             sleep(0.3)
