@@ -4,7 +4,6 @@ __author__ = 'davinellulinvega'
 
 import pyautogui
 from sphero_driver import sphero_driver
-from time import sleep
 from math import atan
 
 
@@ -51,9 +50,6 @@ if sphero.is_connected:
 
             # Ask the robot to roll
             sphero.roll(int(speed), int(heading), 0x01, False)
-
-            # Maybe sleep for a little while
-            sleep(0.3)
 
             # Get the new mouse position
             x, y = pyautogui.position()
