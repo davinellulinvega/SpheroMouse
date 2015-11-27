@@ -5,14 +5,17 @@ __author__ = 'davinellulinvega'
 import pyautogui
 from sphero_driver import sphero_driver
 from math import atan
+from math import sqrt
+from math import pi
 
 
 # Get the screen size
 screen_w, screen_h = pyautogui.size()
-half_w = float(screen_w / 2)
-half_h = float(screen_h / 2)
+diag = float(sqrt((screen_w**2 + screen_h**2)))
 # Initialize the position of the mouse
 x, y = pyautogui.position()
+if x == 0:
+    x = 1
 x = float(x)
 y = float(y)
 
@@ -42,9 +45,10 @@ if sphero.is_connected:
     try:
         while True:
             # Compute the speed. 255 being the max speed for the robot.
-            speed = (abs(x - half_w) / half_w) * 255
+            length = sqrt((x**2 + y**2))
+            speed = (length / diag) * 255
             # Compute the heading
-            heading = atan(y/x)
+            heading = atan(y/x) * (720/pi)
             # Make sure the heading is between 0 and 359
             heading %= 360
 
@@ -53,6 +57,11 @@ if sphero.is_connected:
 
             # Get the new mouse position
             x, y = pyautogui.position()
+            # Avoid the division by zero
+            if x == 0:
+                x = 1
+
+            # Cast to float so that the atan gives us the real angle
             x = float(x)
             y = float(y)
 
