@@ -4,21 +4,21 @@ __author__ = 'davinellulinvega'
 
 import pyautogui
 from sphero_driver import sphero_driver
-from math import atan
+from math import atan2
 from math import sqrt
 from math import pi
 
 
 # Get the screen size
 screen_w, screen_h = pyautogui.size()
-diag = float(sqrt((screen_w**2 + screen_h**2)))
+half_w = float(screen_w / 2)
+half_h = float(screen_h / 2)
+
 # Initialize the position of the mouse
 x, y = pyautogui.position()
+# Avoid a division by 0
 if x == 0:
     x = 1
-x = float(x)
-y = float(y)
-
 
 # Create a sphero object
 sphero = sphero_driver.Sphero(target_addr="68:86:E7:06:30:CB")
@@ -46,9 +46,15 @@ if sphero.is_connected:
         while True:
             # Compute the speed. 255 being the max speed for the robot.
             length = sqrt((x**2 + y**2))
-            speed = (length / diag) * 255
+            speed = (length / half_h) * 255
+            # The height of the screen being less than the width there are cases were the speed will be more than
+            # the maximum allowed
+            if speed > 255:
+                speed = 255
             # Compute the heading
-            heading = atan(y/x) * (720/pi)
+            heading = atan2(y, x) * (180/pi)
+            if heading < 0:
+                heading += 360
             # Make sure the heading is between 0 and 359
             heading %= 360
 
@@ -57,13 +63,14 @@ if sphero.is_connected:
 
             # Get the new mouse position
             x, y = pyautogui.position()
+
+            # Cast to float so that the atan gives us the real angle
+            x = float(x) - half_w
+            # Y as a - in front so that the coordinates are in the standard positions x toward right and y going up
+            y = - (float(y) - half_h)
             # Avoid the division by zero
             if x == 0:
                 x = 1
-
-            # Cast to float so that the atan gives us the real angle
-            x = float(x)
-            y = float(y)
 
     except KeyboardInterrupt:
         # Ask the robot to stop rolling
