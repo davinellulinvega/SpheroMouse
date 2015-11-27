@@ -45,10 +45,11 @@ sphero.set_stablization(0x00, False)
 # Set the heading to 0
 sphero.set_heading(0x00, False)
 # Put the robot into the 0 position
+sphero.roll(0x00, 0x00, 0x01, False)
 sphero.roll(0x00, 0x00, 0x00, False)
 
 # Set the data streaming
-sphero.set_data_strm(200, 1,
+sphero.set_data_strm(100, 1,
                      sphero_driver.STRM_MASK1['IMU_PITCH_FILTERED'] | sphero_driver.STRM_MASK1['IMU_YAW_FILTERED'] |
                      sphero_driver.STRM_MASK1['IMU_ROLL_FILTERED'], 0, 0, False)
 
