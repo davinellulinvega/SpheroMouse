@@ -5,6 +5,7 @@ __author__ = 'davinellulinvega'
 import pyautogui
 from sphero_driver import sphero_driver
 from math import atan2
+from math import acos
 from math import sqrt
 from math import pi
 
@@ -13,6 +14,9 @@ from math import pi
 screen_w, screen_h = pyautogui.size()
 half_w = float(screen_w / 2)
 half_h = float(screen_h / 2)
+
+# Compute the critical angle
+crit_angle = atan2(half_h, half_w)
 
 # Initialize the position of the mouse
 x, y = pyautogui.position()
