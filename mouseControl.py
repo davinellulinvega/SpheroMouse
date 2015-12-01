@@ -48,6 +48,13 @@ if sphero.is_connected:
     # the right direction
     try:
         while True:
+            # Compute the heading
+            heading = atan2(y, x) * (180/pi)
+            if heading < 0:
+                heading += 360
+            # Make sure the heading is between 0 and 359
+            heading %= 360
+
             # Compute the speed. 255 being the max speed for the robot.
             length = sqrt((x**2 + y**2))
             speed = (length / half_h) * 255
@@ -55,12 +62,6 @@ if sphero.is_connected:
             # the maximum allowed
             if speed > 255:
                 speed = 255
-            # Compute the heading
-            heading = atan2(y, x) * (180/pi)
-            if heading < 0:
-                heading += 360
-            # Make sure the heading is between 0 and 359
-            heading %= 360
 
             # Ask the robot to roll
             sphero.roll(int(speed), int(heading), 0x01, False)
